@@ -6,7 +6,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>Latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
+		<Nullable>disable</Nullable>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<!-- Debug is useless for a mod -->
 		<DebugType>none</DebugType>
@@ -15,7 +15,7 @@
 
 	<PropertyGroup>
 		<!-- This should point to wherever your games primary EXE is -->
-		<TheLongDarkPath>O:\SteamLibrary\steamapps\common\TheLongDark</TheLongDarkPath>
+		<TheLongDarkPath>e:\games\TheLongDark</TheLongDarkPath>
 		<Mods>$(TheLongDarkPath)\Mods</Mods>
 		<Plugins>$(TheLongDarkPath)\Plugins</Plugins>
 		<UserData>$(TheLongDarkPath)\UserData</UserData>
@@ -29,12 +29,53 @@
 		<This>$(MyMods)\MapManager</This>
 
 		<!--Path to a release folder-->
-		<ReleaseFolderPath>$(This)\Release</ReleaseFolderPath>
+		<ReleaseFolderPath>$(ProjectDir)\Release</ReleaseFolderPath>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="STBlade.Modding.TLD.Il2CppAssemblies.Windows" Version="2.36.0" />
-		<PackageReference Include="STBlade.Modding.TLD.ModSettings" Version="1.9.0" />
+		<!-- Local MelonLoader runtime -->
+		<Reference Include="MelonLoader">
+			<HintPath>$(TheLongDarkPath)\MelonLoader\net6\MelonLoader.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Il2CppInterop.Runtime">
+			<HintPath>$(TheLongDarkPath)\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="0Harmony">
+			<HintPath>$(TheLongDarkPath)\MelonLoader\net6\0Harmony.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<!-- Local TLD 2.55 Il2Cpp assemblies -->
+		<Reference Include="Il2Cppmscorlib">
+			<HintPath>$(TheLongDarkPath)\MelonLoader\Il2CppAssemblies\Il2Cppmscorlib.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Assembly-CSharp">
+			<HintPath>$(TheLongDarkPath)\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>$(TheLongDarkPath)\MelonLoader\Il2CppAssemblies\UnityEngine.CoreModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>$(TheLongDarkPath)\MelonLoader\Il2CppAssemblies\UnityEngine.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Il2CppTLD.PDID">
+			<HintPath>$(TheLongDarkPath)\MelonLoader\Il2CppAssemblies\Il2CppTLD.PDID.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.AssetBundleModule">
+			<HintPath>$(TheLongDarkPath)\MelonLoader\Il2CppAssemblies\UnityEngine.AssetBundleModule.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<!-- ModSettings from local Mods folder -->
+		<Reference Include="ModSettings">
+			<HintPath>$(Mods)\ModSettings.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -43,7 +84,7 @@
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="ComplexLogger">
-			<HintPath>$(Libraries)\ComplexLogger.dll</HintPath>
+			<HintPath>$(Mods)\ComplexLogger.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 	</ItemGroup>
