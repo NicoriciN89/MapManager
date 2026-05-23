@@ -20,6 +20,36 @@ namespace MapManager
 			}
 		}
 
+		public override void OnSceneWasLoaded(int buildIndex, string sceneName)
+		{
+			if (MapDetailManager.s_MapDetails == null) return;
+
+			HashSet<string> seenGuids = new HashSet<string>();
+			List<MapDetail> toRemove = new List<MapDetail>();
+
+			foreach (MapDetail detail in MapDetailManager.s_MapDetails)
+			{
+				if (detail == null) continue;
+				GameObject go = detail.gameObject;
+				if (go == null) continue;
+				ObjectGuid objectGuid = go.GetComponent<ObjectGuid>();
+				if (objectGuid == null) continue;
+				string guid = objectGuid.m_Guid;
+				if (string.IsNullOrWhiteSpace(guid)) continue;
+
+				if (!seenGuids.Add(guid))
+				{
+					toRemove.Add(detail);
+				}
+			}
+
+			foreach (MapDetail detail in toRemove)
+			{
+				MapDetailManager.Unregister(detail);
+				Logger.Log($"DupeFix cleanup: Removed duplicate MapDetail in scene {sceneName}", FlaggedLoggingLevel.Verbose);
+			}
+		}
+
 		public static AssetBundle LoadAssetBundle(string name)
 		{
 			using (Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name))
