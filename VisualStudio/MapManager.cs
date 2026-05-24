@@ -34,6 +34,8 @@ namespace MapManager
 				if (detail == null) continue;
 				string locId = detail.m_LocID;
 				if (string.IsNullOrWhiteSpace(locId)) continue;
+				// GAMEPLAY_ LocIDs are type-names shared by many legitimate instances.
+				if (locId.StartsWith("GAMEPLAY_", StringComparison.Ordinal)) continue;
 
 				if (!seenLocIds.Add(locId))
 				{

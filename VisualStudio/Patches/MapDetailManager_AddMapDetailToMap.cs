@@ -15,6 +15,9 @@ namespace MapManager
 			{
 				string locId = mapDetail.m_LocID;
 				if (string.IsNullOrWhiteSpace(locId)) return true;
+				// GAMEPLAY_ LocIDs are shared type-names (e.g. GAMEPLAY_BranchBigHard).
+				// Dozens of valid separate objects share them — not real duplicates.
+				if (locId.StartsWith("GAMEPLAY_", StringComparison.Ordinal)) return true;
 
 				if (MapDetailManager.s_MapDetails == null) return true;
 				foreach (MapDetail detail in MapDetailManager.s_MapDetails)
@@ -55,6 +58,8 @@ namespace MapManager
 					if (detail == null) continue;
 					string locId = detail.m_LocID;
 					if (string.IsNullOrWhiteSpace(locId)) continue;
+					// GAMEPLAY_ LocIDs are type-names shared by many legitimate instances.
+					if (locId.StartsWith("GAMEPLAY_", StringComparison.Ordinal)) continue;
 
 					if (!seenLocIds.Add(locId))
 					{
