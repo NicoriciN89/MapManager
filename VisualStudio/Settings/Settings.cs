@@ -6,44 +6,43 @@ namespace MapManager
 	{
 		internal static Settings Instance { get; } = new();
 
-		[Section("Main")]
-		[Name("Enable Map Arrow")]
-		[Description("If enabled, will show where the player is on the map with an arrow")]
+		[Section("MAPMANAGER_SECTION_MAIN", Localize = true)]
+		[Name("MAPMANAGER_ENABLE_ARROW", Localize = true)]
+		[Description("MAPMANAGER_ENABLE_ARROW_DESC")]
 		public bool EnableArrow                 = false;
 
-		[Name("Center on the player")]
-		[Description("If enabled, will center on where the player is on the map")]
+		[Name("MAPMANAGER_CENTER_PLAYER", Localize = true)]
+		[Description("MAPMANAGER_CENTER_PLAYER_DESC")]
 		public bool CenterOnPlayer              = false;
 
-		[Name("BETA: Reveal The map")]
-		[Description("Set this to be able to map the entire region")]
+		[Name("MAPMANAGER_REVEAL_MAP", Localize = true)]
+		[Description("MAPMANAGER_REVEAL_MAP_DESC")]
 		public KeyCode RevealMap                = KeyCode.KeypadDivide;
 
-		[Section("Map Surveying")]
-		[Name("Range Mulitplier")]
-		//[Description("Vanilla = 25")]
+		[Section("MAPMANAGER_SECTION_SURVEY", Localize = true)]
+		[Name("MAPMANAGER_RANGE_MULT", Localize = true)]
 		[Slider(0f, 25f, NumberFormat = "{0:F2}")]
 		public float MapSurveyMult              = 1f;
 
-		[Name("Map Surveying Time Multiplier")]
-		[Description("The amount of time it takes to survey")]
+		[Name("MAPMANAGER_SURVEY_TIME", Localize = true)]
+		[Description("MAPMANAGER_SURVEY_TIME_DESC")]
 		[Slider(0.1f, 5f, NumberFormat = "{0:F2}")]
 		public float MapSurveyMultTime          = 1f;
 
-		[Name("Polaroid's Always Discovered")]
-		[Description("Surveying vistas w/o polaroid's will add the relevant Polaroid to your inventory.")]
+		[Name("MAPMANAGER_POLAROID", Localize = true)]
+		[Description("MAPMANAGER_POLAROID_DESC")]
 		public bool MapWithPolariods            = false;
 
-		[Name("Reveal Vista Locations")]
-		[Description("Will force reveal any vista locations within range")]
+		[Name("MAPMANAGER_REVEAL_VISTA", Localize = true)]
+		[Description("MAPMANAGER_REVEAL_VISTA_DESC")]
 		public bool RevealVista                 = false;
 
-		[Name("Unlock Survey")]
-		[Description("Allow surveying at any time.")]
+		[Name("MAPMANAGER_UNLOCK_SURVEY", Localize = true)]
+		[Description("MAPMANAGER_UNLOCK_SURVEY_DESC")]
 		public bool UnlockSurvey                = false;
 
-		[Name("Automatically add all dead corpses to the map")]
-		[Description("")]
+		[Name("MAPMANAGER_ADD_CORPSE", Localize = true)]
+		[Description("MAPMANAGER_ADD_CORPSE_DESC")]
 		public bool AddCorpseToMap = false;
 
 

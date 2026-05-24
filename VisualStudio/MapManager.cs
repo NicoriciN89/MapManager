@@ -9,7 +9,50 @@ namespace MapManager
         public static ComplexLogger<Main> Logger = new ComplexLogger<Main>();
         public override void OnInitializeMelon()
         {
+            ApplyDescriptionHolderPatches();
             Settings.OnLoad();
+        }
+
+        private void ApplyDescriptionHolderPatches()
+        {
+            try
+            {
+                var descType = AppDomain.CurrentDomain.GetAssemblies()
+                    .FirstOrDefault(a => a.GetName().Name == "ModSettings")
+                    ?.GetType("ModSettings.DescriptionHolder");
+
+                if (descType == null)
+                {
+                    Logger.Log("[MapManager] DescriptionHolder type not found — description patches skipped", FlaggedLoggingLevel.Debug);
+                    return;
+                }
+
+                var setDescMethod = descType.GetMethod("SetDescription",
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                var getTextMethod = descType.GetProperty("Text",
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    ?.GetGetMethod(nonPublic: true);
+
+                if (setDescMethod != null)
+                {
+                    var prefix = typeof(Patch_DescriptionHolder_SetDescription)
+                        .GetMethod("Prefix", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+                    if (prefix != null)
+                        HarmonyInstance.Patch(setDescMethod, new HarmonyMethod(prefix));
+                }
+
+                if (getTextMethod != null)
+                {
+                    var postfix = typeof(Patch_DescriptionHolder_get_Text)
+                        .GetMethod("Postfix", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+                    if (postfix != null)
+                        HarmonyInstance.Patch(getTextMethod, postfix: new HarmonyMethod(postfix));
+                }
+            }
+            catch (Exception ex)
+            {
+                MelonLogger.Warning($"[MapManager] DescriptionHolder patch failed: {ex.Message}");
+            }
         }
 
 		public override void OnUpdate()
