@@ -1,9 +1,10 @@
 namespace MapManager
 {
-	// Patch MapDetailManager.Register() to prevent duplicate GUID registrations.
+	// Patch MapDetailManager.Register() to prevent duplicate LocID registrations.
 	// Root cause: MountainTownRegion has 3 copies of STR_HouseExteriorBMiltonBurnt_Prefab
-	// all sharing the same ObjectGuid. With MapManager large survey radius, all 3 get
-	// surveyed and registered -> Unity 6000 asset unloader crashes on scene exit.
+	// all sharing the same m_LocID. ObjectGuid is on the PARENT object, not on MapDetail's
+	// GameObject — so GetComponent<ObjectGuid>() was always returning null and skipping.
+	// Fix: use m_LocID directly, which is the same field the game itself checks in Serialize().
 	[HarmonyPatch(typeof(MapDetailManager), nameof(MapDetailManager.Register))]
 	internal class MapDetailManager_Register
 	{
@@ -12,25 +13,17 @@ namespace MapManager
 			if (mapDetail == null) return true;
 			try
 			{
-				GameObject go = mapDetail.gameObject;
-				if (go == null) return true;
-				ObjectGuid objectGuid = go.GetComponent<ObjectGuid>();
-				if (objectGuid == null) return true;
-				string guid = objectGuid.m_Guid;
-				if (string.IsNullOrWhiteSpace(guid)) return true;
+				string locId = mapDetail.m_LocID;
+				if (string.IsNullOrWhiteSpace(locId)) return true;
 
 				if (MapDetailManager.s_MapDetails == null) return true;
 				foreach (MapDetail detail in MapDetailManager.s_MapDetails)
 				{
 					if (detail == null) continue;
 					if (detail.Pointer == mapDetail.Pointer) continue;
-					GameObject detailGo = detail.gameObject;
-					if (detailGo == null) continue;
-					ObjectGuid detailGuid = detailGo.GetComponent<ObjectGuid>();
-					if (detailGuid == null) continue;
-					if (detailGuid.m_Guid == guid)
+					if (detail.m_LocID == locId)
 					{
-						Main.Logger.Log($"DupeFix [Register]: Blocked duplicate GUID={guid} LocID={mapDetail.m_LocID}", FlaggedLoggingLevel.Debug);
+						Main.Logger.Log($"DupeFix [Register]: Blocked duplicate LocID={locId}", FlaggedLoggingLevel.Debug);
 						return false;
 					}
 				}
@@ -44,31 +37,27 @@ namespace MapManager
 	}
 
 	// Patch MapDetailManager.Serialize() to deduplicate s_MapDetails before every save.
-	// This is the last line of defense: catches any duplicates that slipped through Register()
-	// or were loaded from old save data via Deserialize(), preventing the Unity 6000 crash
-	// during asset unloading that follows scene serialization.
+	// Last line of defense: catches duplicates that slipped through Register() or were loaded
+	// from old save data, preventing the Unity 6000 crash during asset unloading.
 	[HarmonyPatch(typeof(MapDetailManager), nameof(MapDetailManager.Serialize))]
 	internal class MapDetailManager_Serialize
 	{
 		private static void Prefix()
 		{
+			Main.Logger.Log($"[Diag] MapDetailManager.Serialize() called, count={MapDetailManager.s_MapDetails?.Count ?? -1}", FlaggedLoggingLevel.Debug);
 			if (MapDetailManager.s_MapDetails == null) return;
 			try
 			{
-				HashSet<string> seenGuids = new HashSet<string>();
+				HashSet<string> seenLocIds = new HashSet<string>();
 				List<MapDetail> toRemove = new List<MapDetail>();
 
 				foreach (MapDetail detail in MapDetailManager.s_MapDetails)
 				{
 					if (detail == null) continue;
-					GameObject go = detail.gameObject;
-					if (go == null) continue;
-					ObjectGuid objectGuid = go.GetComponent<ObjectGuid>();
-					if (objectGuid == null) continue;
-					string guid = objectGuid.m_Guid;
-					if (string.IsNullOrWhiteSpace(guid)) continue;
+					string locId = detail.m_LocID;
+					if (string.IsNullOrWhiteSpace(locId)) continue;
 
-					if (!seenGuids.Add(guid))
+					if (!seenLocIds.Add(locId))
 					{
 						toRemove.Add(detail);
 					}

@@ -31,20 +31,16 @@ namespace MapManager
 			int totalBefore = MapDetailManager.s_MapDetails.Count;
 			Logger.Log($"[Diag] Scene '{sceneName}' loaded — MapDetails registered: {totalBefore}", FlaggedLoggingLevel.Debug);
 
-			HashSet<string> seenGuids = new HashSet<string>();
+			HashSet<string> seenLocIds = new HashSet<string>();
 			List<MapDetail> toRemove = new List<MapDetail>();
 
 			foreach (MapDetail detail in MapDetailManager.s_MapDetails)
 			{
 				if (detail == null) continue;
-				GameObject go = detail.gameObject;
-				if (go == null) continue;
-				ObjectGuid objectGuid = go.GetComponent<ObjectGuid>();
-				if (objectGuid == null) continue;
-				string guid = objectGuid.m_Guid;
-				if (string.IsNullOrWhiteSpace(guid)) continue;
+				string locId = detail.m_LocID;
+				if (string.IsNullOrWhiteSpace(locId)) continue;
 
-				if (!seenGuids.Add(guid))
+				if (!seenLocIds.Add(locId))
 				{
 					toRemove.Add(detail);
 				}
