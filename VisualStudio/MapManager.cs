@@ -22,7 +22,14 @@ namespace MapManager
 
 		public override void OnSceneWasLoaded(int buildIndex, string sceneName)
 		{
-			if (MapDetailManager.s_MapDetails == null) return;
+			if (MapDetailManager.s_MapDetails == null)
+			{
+				Logger.Log($"[Diag] Scene '{sceneName}' — s_MapDetails is null, skipping DupeFix", FlaggedLoggingLevel.Debug);
+				return;
+			}
+
+			int totalBefore = MapDetailManager.s_MapDetails.Count;
+			Logger.Log($"[Diag] Scene '{sceneName}' loaded — MapDetails registered: {totalBefore}", FlaggedLoggingLevel.Debug);
 
 			HashSet<string> seenGuids = new HashSet<string>();
 			List<MapDetail> toRemove = new List<MapDetail>();
@@ -45,9 +52,13 @@ namespace MapManager
 
 			foreach (MapDetail detail in toRemove)
 			{
+				string locId = detail.m_LocID ?? "(null)";
 				MapDetailManager.Unregister(detail);
-				Logger.Log($"DupeFix cleanup: Removed duplicate MapDetail in scene {sceneName}", FlaggedLoggingLevel.Verbose);
+				Logger.Log($"[Diag] DupeFix: Removed duplicate MapDetail LocID='{locId}' in scene '{sceneName}'", FlaggedLoggingLevel.Debug);
 			}
+
+			if (toRemove.Count > 0)
+				Logger.Log($"[Diag] DupeFix summary for '{sceneName}': removed {toRemove.Count} duplicates (was {totalBefore}, now {MapDetailManager.s_MapDetails.Count})", FlaggedLoggingLevel.Debug);
 		}
 
 		public static AssetBundle LoadAssetBundle(string name)

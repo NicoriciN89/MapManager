@@ -7,10 +7,13 @@
 		{
 			if (__instance == null || !Settings.Instance.AddCorpseToMap) return;
 			MapDetail mapDetail = __instance.gameObject.GetComponent<MapDetail>();
-			if ((bool)mapDetail)
+			if (mapDetail == null)
 			{
-				mapDetail.ShowOnMap(true);
+				Main.Logger.Log($"[Diag] EnterDead: {__instance.name} has no MapDetail component, skipped", FlaggedLoggingLevel.Debug);
+				return;
 			}
+			mapDetail.ShowOnMap(true);
+			Main.Logger.Log($"[Diag] EnterDead: Added {__instance.name} to map", FlaggedLoggingLevel.Debug);
 		}
 	}
 }

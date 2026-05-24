@@ -24,8 +24,10 @@
 				return;
 			}
 
+			float originalRadius = radius;
 			radius *= Settings.Instance.MapSurveyMult;
 			shouldAllowVistaReveals = Settings.Instance.RevealVista;
+			Main.Logger.Log($"[Diag] SurveyCheck: radius {originalRadius:F1} → {radius:F1} (x{Settings.Instance.MapSurveyMult:F2}), vistaReveal={shouldAllowVistaReveals}", FlaggedLoggingLevel.Debug);
 
 			//string mapNameOfCurrentScene = __instance.GetMapNameOfCurrentScene();
 			//float rangeBoostMinHeight = 0f;

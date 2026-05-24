@@ -17,7 +17,7 @@
 			}
 			if (!__result)
 			{
-				Main.Logger.Log($"{__instance.m_LocationName.Text()}: Result is false", FlaggedLoggingLevel.Verbose);
+				Main.Logger.Log($"{__instance.m_LocationName.Text()}: Result is false", FlaggedLoggingLevel.Debug);
 			}
 		}
 
