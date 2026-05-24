@@ -3,18 +3,20 @@
     [HarmonyPatch(typeof(Panel_Map), nameof(Panel_Map.Enable), new Type[] { typeof(bool), typeof(bool) })]
     internal class Panel_Map_Initialize
     {
-        internal static Panel_Map.ResetOpts resetOpts = Panel_Map.ResetOpts.Zoomed;
-        private static void Postfix(Panel_Map __instance, ref bool enable, ref bool cameFromDetailSurvey)
+        private static void Postfix(Panel_Map __instance, bool enable, bool cameFromDetailSurvey)
         {
+            if (!enable) return;
+
+            Panel_Map.ResetOpts opts = Panel_Map.ResetOpts.Zoomed;
             if (Settings.Instance.EnableArrow)
             {
-                resetOpts |= Panel_Map.ResetOpts.ShowPlayer;
+                opts |= Panel_Map.ResetOpts.ShowPlayer;
             }
             if (Settings.Instance.CenterOnPlayer)
             {
-                resetOpts |= Panel_Map.ResetOpts.CenterOnPlayer;
+                opts |= Panel_Map.ResetOpts.CenterOnPlayer;
             }
-            __instance.ResetToNormal(resetOpts);
+            __instance.ResetToNormal(opts);
         }
     }
 }

@@ -7,6 +7,7 @@
 		{
 			if (Settings.Instance.MapWithPolariods && !__result)
 			{
+				if (__instance.m_RequiredGearItem == null) return;
 				Main.Logger.Log($"Add: {__instance.m_RequiredGearItem.GetDisplayNameWithoutConditionForInventoryInterfaces()}", FlaggedLoggingLevel.Debug);
 				GameManager.GetPlayerManagerComponent().AddItemToPlayerInventory(__instance.m_RequiredGearItem, true, true);
 				//GameManager.GetPlayerManagerComponent().RevealOnPolaroidDiscovery(__instance.m_RequiredGearItem);
