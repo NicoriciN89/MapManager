@@ -9,11 +9,11 @@
 			MapDetail mapDetail = __instance.gameObject.GetComponent<MapDetail>();
 			if (mapDetail == null)
 			{
-				Main.Logger.Log($"[Diag] EnterDead: {__instance.name} has no MapDetail component, skipped", FlaggedLoggingLevel.Debug);
+				Main.Logger.Log($"EnterDead: {__instance.name} has no MapDetail component, skipped", FlaggedLoggingLevel.Verbose);
 				return;
 			}
 			mapDetail.ShowOnMap(true);
-			Main.Logger.Log($"[Diag] EnterDead: Added {__instance.name} to map", FlaggedLoggingLevel.Debug);
+			Main.Logger.Log($"EnterDead: Added {__instance.name} to map", FlaggedLoggingLevel.Debug);
 		}
 	}
 }

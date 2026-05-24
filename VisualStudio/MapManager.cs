@@ -22,14 +22,9 @@ namespace MapManager
 
 		public override void OnSceneWasLoaded(int buildIndex, string sceneName)
 		{
-			if (MapDetailManager.s_MapDetails == null)
-			{
-				Logger.Log($"[Diag] Scene '{sceneName}' — s_MapDetails is null, skipping DupeFix", FlaggedLoggingLevel.Debug);
-				return;
-			}
+			if (MapDetailManager.s_MapDetails == null) return;
 
 			int totalBefore = MapDetailManager.s_MapDetails.Count;
-			Logger.Log($"[Diag] Scene '{sceneName}' loaded — MapDetails registered: {totalBefore}", FlaggedLoggingLevel.Debug);
 
 			HashSet<string> seenLocIds = new HashSet<string>();
 			List<MapDetail> toRemove = new List<MapDetail>();
@@ -50,11 +45,11 @@ namespace MapManager
 			{
 				string locId = detail.m_LocID ?? "(null)";
 				MapDetailManager.Unregister(detail);
-				Logger.Log($"[Diag] DupeFix: Removed duplicate MapDetail LocID='{locId}' in scene '{sceneName}'", FlaggedLoggingLevel.Debug);
+				Logger.Log($"DupeFix [Scene]: Removed duplicate LocID='{locId}' in '{sceneName}'", FlaggedLoggingLevel.Debug);
 			}
 
 			if (toRemove.Count > 0)
-				Logger.Log($"[Diag] DupeFix summary for '{sceneName}': removed {toRemove.Count} duplicates (was {totalBefore}, now {MapDetailManager.s_MapDetails.Count})", FlaggedLoggingLevel.Debug);
+				Logger.Log($"DupeFix [Scene]: Removed {toRemove.Count} duplicate(s) in '{sceneName}' (was {totalBefore}, now {MapDetailManager.s_MapDetails.Count})", FlaggedLoggingLevel.Debug);
 		}
 
 		public static AssetBundle LoadAssetBundle(string name)

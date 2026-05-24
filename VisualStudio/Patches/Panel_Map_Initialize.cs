@@ -16,7 +16,7 @@
             {
                 opts |= Panel_Map.ResetOpts.CenterOnPlayer;
             }
-            Main.Logger.Log($"[Diag] Map opened: opts={opts}, fromSurvey={cameFromDetailSurvey}", FlaggedLoggingLevel.Debug);
+            Main.Logger.Log($"Map opened: opts={opts}, fromSurvey={cameFromDetailSurvey}", FlaggedLoggingLevel.Verbose);
             __instance.ResetToNormal(opts);
         }
     }

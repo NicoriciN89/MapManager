@@ -30,7 +30,7 @@ namespace MapManager
 			}
 			catch (Exception ex)
 			{
-				Main.Logger.Log($"[Diag] DupeFix error: {ex.Message}\n{ex.StackTrace}", FlaggedLoggingLevel.Error);
+				Main.Logger.Log($"DupeFix [Register]: error: {ex.Message}\n{ex.StackTrace}", FlaggedLoggingLevel.Error);
 			}
 			return true;
 		}
@@ -44,7 +44,6 @@ namespace MapManager
 	{
 		private static void Prefix()
 		{
-			Main.Logger.Log($"[Diag] MapDetailManager.Serialize() called, count={MapDetailManager.s_MapDetails?.Count ?? -1}", FlaggedLoggingLevel.Debug);
 			if (MapDetailManager.s_MapDetails == null) return;
 			try
 			{
@@ -72,7 +71,7 @@ namespace MapManager
 			}
 			catch (Exception ex)
 			{
-				Main.Logger.Log($"[Diag] DupeFix Serialize error: {ex.Message}", FlaggedLoggingLevel.Error);
+				Main.Logger.Log($"DupeFix [Serialize]: error: {ex.Message}", FlaggedLoggingLevel.Error);
 			}
 		}
 	}
